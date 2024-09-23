@@ -83,24 +83,60 @@ export async function getBlogs() {
   return data;
 }
 
-export async function getAllBlogs() {
-  const data = await prisma.post.findMany({
-    select: {
-      id: true,
-      title: true,
-      smalldescription: true,
-      createdAt: true,
-      user: {
-        select: {
-          firstname: true,
-          lastname: true,
-          profilepicture: true,
+export async function getAllBlogs(query: string) {
+  try {
+    const data = await prisma.post.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            smalldescription: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        title: true,
+        smalldescription: true,
+        createdAt: true,
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            profilepicture: true,
+          },
         },
       },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  return data;
+    });
+    return data;
+  } catch (error) {
+    throw new Error("Failed to fetch blogs");
+  }
+  // const data = await prisma.post.findMany({
+  //   select: {
+  //     id: true,
+  //     title: true,
+  //     smalldescription: true,
+  //     createdAt: true,
+  //     user: {
+  //       select: {
+  //         firstname: true,
+  //         lastname: true,
+  //         profilepicture: true,
+  //       },
+  //     },
+  //   },
+  //   orderBy: {
+  //     createdAt: "desc",
+  //   },
+  // });
+  // return data;
 }
