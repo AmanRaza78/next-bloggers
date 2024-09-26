@@ -71,9 +71,9 @@ export default async function Home() {
           })}
         </ul>
       </div>
-      <div className="flex justify-end text-base font-medium leading-6">
-        <Link href="/posts" className="text-primary" aria-label="All posts">
-          All Posts &rarr;
+      <div className="flex justify-end text-base font-medium leading-6 mb-6">
+        <Link href="/blogs" className="text-primary" aria-label="All Blogs">
+          All Blogs &rarr;
         </Link>
       </div>
     </>

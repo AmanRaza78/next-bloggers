@@ -1,12 +1,14 @@
 import { getAllBlogs } from "@/action";
 import Link from "next/link";
+import Pagination from "./pagination";
 
-export default async function PostCard({ query }: { query: string }) {
-  const posts = await getAllBlogs(query);
+export default async function PostCard({ searchParams }: { searchParams: { [key: string]: string } }) {
+  const {count, data} = await getAllBlogs(searchParams);
   return (
+    <>
     <ul className="divide-y divide-gray-200">
-      {!posts.length && "No posts found."}
-      {posts.map((post) => {
+      {!data.length && "No posts found."}
+      {data.map((post) => {
         const { title, smalldescription, createdAt, id, user } = post;
         return (
           <li key={id} className="py-12">
@@ -54,5 +56,7 @@ export default async function PostCard({ query }: { query: string }) {
         );
       })}
     </ul>
+    <Pagination totalPages={Math.ceil(count / 10)} />
+    </>
   );
 }

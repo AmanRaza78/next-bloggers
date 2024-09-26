@@ -4,16 +4,12 @@ import SearchBar from "@/components/search-bar";
 export default async function Blogs({
   searchParams,
 }: {
-  searchParams?: {
-    query?: string;
-  };
+  searchParams: { [key: string]: string };
 }) {
-  const query = searchParams?.query || "";
-
   return (
-    <div>
-      <SearchBar />
-      <PostCard query={query}/>
+    <div className="mb-6">
+      <SearchBar/>
+      <PostCard searchParams={searchParams} />
     </div>
   );
 }
