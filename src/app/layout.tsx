@@ -23,7 +23,7 @@ export default function RootLayout({
         <SectionContainer>
           <Navbar />
           {children}
-          <Toaster />
+          <Toaster richColors theme="light" closeButton />
         </SectionContainer>
       </body>
     </html>

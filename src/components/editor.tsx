@@ -8,6 +8,7 @@ import {
   type Editor,
 } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { Bold,Strikethrough,Italic,Code,List,ListOrdered,Heading1,Heading2, Heading3} from 'lucide-react';
 
 export const MenuBar = ({ editor }: { editor: Editor | null }) => {
   if (!editor) {
@@ -23,7 +24,7 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
         }
         type="button"
       >
-        H1
+        <Heading1/>
       </Button>
 
       <Button
@@ -33,7 +34,7 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
         }
         type="button"
       >
-        H2
+        <Heading2/>
       </Button>
 
       <Button
@@ -43,7 +44,7 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
         }
         type="button"
       >
-        H3
+        <Heading3/>
       </Button>
 
       <Button
@@ -51,7 +52,7 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
         variant={editor.isActive("bold") ? "default" : "secondary"}
         type="button"
       >
-        Bold
+        <Bold/>
       </Button>
 
       <Button
@@ -59,7 +60,7 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
         variant={editor.isActive("italic") ? "default" : "secondary"}
         type="button"
       >
-        Italic
+        <Italic/>
       </Button>
 
       <Button
@@ -67,7 +68,7 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
         variant={editor.isActive("strike") ? "default" : "secondary"}
         type="button"
       >
-        Strike
+        <Strikethrough/>
       </Button>
 
       <Button
@@ -75,8 +76,20 @@ export const MenuBar = ({ editor }: { editor: Editor | null }) => {
         variant={editor.isActive("codeBlock") ? "default" : "secondary"}
         type="button"
       >
-        Code Block
+        <Code/>
       </Button>
+
+      <Button
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        variant={editor.isActive("bulletList") ? "default" : "secondary"}
+        type="button"
+      ><List/></Button>
+
+      <Button
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        variant={editor.isActive("orderedList") ? "default" : "secondary"}
+        type="button"
+      ><ListOrdered/></Button>
     </div>
   );
 };

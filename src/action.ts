@@ -24,6 +24,21 @@ const blogPostSchema = z.object({
     .min(10, { message: "The title has to be a min character length of 10" }),
 });
 
+const userSchema = z.object({
+  firstname: z
+    .string()
+    .min(3, { message: "The title has to be a min character length of 3" })
+    .optional(),
+  lastname: z
+    .string()
+    .min(3, { message: "The title has to be a min character length of 3" })
+    .optional(),
+  bio: z
+    .string()
+    .min(3, { message: "The title has to be a min character length of 3" })
+    .optional(),
+});
+
 export async function CreateBlogPost(prevState: any, formData: FormData) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
@@ -137,5 +152,51 @@ export async function getAllBlogs(searchParams: Record<string, string>) {
   } catch (error) {
     console.log(error);
     throw new Error("Failed to fetch blogs");
+  }
+}
+
+export async function updateUser(prevState: any, formData: FormData) {
+  try {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+
+    if (!user) {
+      return redirect("/api/auth/login");
+    }
+
+    const parsedFields = userSchema.safeParse({
+      firstname: formData.get("firstname"),
+      lastname: formData.get("lastname"),
+      bio: formData.get("bio"),
+    });
+
+    if (!parsedFields.success) {
+      const state: State = {
+        status: "error",
+        error: parsedFields.error.flatten().fieldErrors,
+        message: "Oops, I think there is a mistake with your inputs",
+      };
+
+      return state;
+    }
+
+    const data = await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        firstname: parsedFields.data.firstname,
+        lastname: parsedFields.data.lastname,
+        bio: parsedFields.data.bio,
+      },
+    });
+    const state: State = {
+      status: "success",
+      message: "Your Settings have been updated",
+    };
+
+    return state;
+  } catch (error) {
+    console.log(error);
   }
 }

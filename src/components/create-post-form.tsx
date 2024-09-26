@@ -77,7 +77,7 @@ export default function CreatePostForm() {
         </div>
       </CardContent>
       <CardFooter>
-        <SubmitButton />
+        <SubmitButton text="Post"/>
       </CardFooter>
     </form>
   );

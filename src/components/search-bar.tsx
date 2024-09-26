@@ -2,6 +2,7 @@
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { Input } from "./ui/input";
+import { Search } from "lucide-react";
 
 export default function SearchBar() {
   const searchParams = useSearchParams();
@@ -20,7 +21,8 @@ export default function SearchBar() {
   }, 300);
 
   return (
-    <div>
+    <div className="flex items-center gap-x-2">
+      <Search className="w-8 h-8 bg-primary text-white rounded-full"/>
       <Input
         type="text"
         placeholder="Search..."
