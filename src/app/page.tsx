@@ -1,5 +1,4 @@
 import { getBlogs } from "@/action";
-import PostCard from "@/components/post-card";
 import Link from "next/link";
 
 export default async function Home() {

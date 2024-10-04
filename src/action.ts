@@ -3,6 +3,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import prisma from "./lib/db";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 export type State = {
   status: "error" | "success" | undefined;
@@ -37,6 +38,10 @@ const userSchema = z.object({
     .string()
     .min(3, { message: "The title has to be a min character length of 3" })
     .optional(),
+});
+
+const deletePostSchema = z.object({
+  postId: z.string(),
 });
 
 export async function CreateBlogPost(prevState: any, formData: FormData) {
@@ -156,14 +161,14 @@ export async function getAllBlogs(searchParams: Record<string, string>) {
 }
 
 export async function updateUser(prevState: any, formData: FormData) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) {
+    return redirect("/api/auth/login");
+  }
+
   try {
-    const { getUser } = getKindeServerSession();
-    const user = await getUser();
-
-    if (!user) {
-      return redirect("/api/auth/login");
-    }
-
     const parsedFields = userSchema.safeParse({
       firstname: formData.get("firstname"),
       lastname: formData.get("lastname"),
@@ -198,5 +203,79 @@ export async function updateUser(prevState: any, formData: FormData) {
     return state;
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function getUserBlogs() {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) {
+    return redirect("/api/auth/login");
+  }
+
+  try {
+    const data = await prisma.post.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        smalldescription: true,
+        createdAt: true,
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            profilepicture: true,
+          },
+        },
+      },
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to fetch blogs");
+  }
+}
+
+export async function deletePost(prevState: any, formData: FormData) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) {
+    return redirect("/api/auth/login");
+  }
+
+  try {
+    const parsedFields = deletePostSchema.safeParse({
+      postId: formData.get("postId"),
+    });
+
+    if (!parsedFields.success) {
+      const state: State = {
+        status: "error",
+        error: parsedFields.error.flatten().fieldErrors,
+        message: "Something Went Wrong",
+      };
+
+      return state;
+    }
+    await prisma.post.delete({
+      where: {
+        id: parsedFields.data.postId,
+      },
+    });
+    const state: State = {
+      status: "success",
+      message: "Blog post Deleted Successfully",
+    };
+    revalidatePath("/myblogs")
+    return state;
+
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to delete post");
   }
 }

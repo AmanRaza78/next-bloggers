@@ -41,7 +41,7 @@ export function UserNav({ email, name, userImage }: iAppProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/myposts">My Posts</Link>
+            <Link href="/myblogs">My Posts</Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/profile">Profile Settings</Link>
