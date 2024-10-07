@@ -55,7 +55,7 @@ export default async function Home() {
                       </div>
                       <div className="text-base font-medium leading-6">
                         <Link
-                          href={`/post/${id}`}
+                          href={`/blog/${id}`}
                           className="text-primary"
                           aria-label={`Read more: "${title}"`}
                         >

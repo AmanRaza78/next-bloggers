@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Toaster } from "sonner";
 import SectionContainer from "@/components/section-container";
+import ReactQueryProvider from "./react-query-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,11 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
+        <ReactQueryProvider>
         <SectionContainer>
           <Navbar />
           {children}
           <Toaster richColors theme="light" closeButton />
         </SectionContainer>
+        </ReactQueryProvider>
       </body>
     </html>
   );

@@ -44,6 +44,7 @@ const deletePostSchema = z.object({
   postId: z.string(),
 });
 
+// Create a new blog post
 export async function CreateBlogPost(prevState: any, formData: FormData) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
@@ -80,6 +81,7 @@ export async function CreateBlogPost(prevState: any, formData: FormData) {
   return redirect(`/post/${data.id}`);
 }
 
+// get blogs for home page
 export async function getBlogs() {
   const data = await prisma.post.findMany({
     select: {
@@ -103,6 +105,7 @@ export async function getBlogs() {
   return data;
 }
 
+// get all the blogs
 export async function getAllBlogs(searchParams: Record<string, string>) {
   try {
     const { page, query } = searchParams;
@@ -160,6 +163,7 @@ export async function getAllBlogs(searchParams: Record<string, string>) {
   }
 }
 
+// Update the user Profile
 export async function updateUser(prevState: any, formData: FormData) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
@@ -206,6 +210,7 @@ export async function updateUser(prevState: any, formData: FormData) {
   }
 }
 
+// Get the user post
 export async function getUserBlogs() {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
@@ -240,6 +245,7 @@ export async function getUserBlogs() {
   }
 }
 
+// Delete the user post
 export async function deletePost(prevState: any, formData: FormData) {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
@@ -271,9 +277,7 @@ export async function deletePost(prevState: any, formData: FormData) {
       status: "success",
       message: "Blog post Deleted Successfully",
     };
-    revalidatePath("/myblogs")
     return state;
-
   } catch (error) {
     console.log(error);
     throw new Error("Failed to delete post");

@@ -13,34 +13,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id String @id 
-  firstname String
-  lastname String
-  email String
-  profilepicture String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  bio String?
-  post Post[]
+model User {
+  id                    String          @id
+  firstname             String
+  lastname              String
+  email                 String
+  profilepicture        String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  bio                   String?
+  post                  Post[]
+  receivedNotifications Notifications[] @relation("Recipient")
+  issuedNotifications   Notifications[] @relation("Issuer")
+  comments              Comment[]
+  Likes                 Like[]
 }
 
-
-model Post{
-  id String @id @default(uuid())
-  title String
+model Post {
+  id               String @id @default(uuid())
+  title            String
   smalldescription String
-  content Json
+  content          Json
 
   userId String?
-  user User? @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @default(now())
+  linkedNotifications Notifications[]
+  comments            Comment[]
+  Likes               Like[]
 }
-// Todo - 
 
-// Add category and hashtag to the Post.
-// Add Comments feature
-// Add like feature
-// Add Notifications
+model Notifications {
+  id          String           @id @default(uuid())
+  recipientId String
+  recepient   User             @relation("Recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  issuserId   String
+  issueUser   User             @relation("Issuer", fields: [issuserId], references: [id], onDelete: Cascade)
+  postId      String?
+  post        Post?            @relation(fields: [postId], references: [id])
+  type        NotificationType
+  read        Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+model Like {
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId String
+  Post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@map("likes")
+}
+
+enum NotificationType {
+  COMMENT
+  LIKE
+}
