@@ -78,7 +78,7 @@ export async function CreateBlogPost(prevState: any, formData: FormData) {
     },
   });
 
-  return redirect(`/post/${data.id}`);
+  return redirect(`/blog/${data.id}`);
 }
 
 // get blogs for home page
